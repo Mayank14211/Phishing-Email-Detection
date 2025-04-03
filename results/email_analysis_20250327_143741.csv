@@ -1,0 +1,3 @@
+filename,expected_class,predicted_class,probability,risk_level,risk_score,suspicious_features,correct
+legitimate1.eml,0,0,0.4,LOW,6,Requests sensitive information (2 instances),True
+phishing1.eml,1,1,0.95,HIGH,22,"Contains 2 urgency indicators, Requests sensitive information (6 instances)",True

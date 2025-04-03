@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Analysis Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>Batch Analysis Results</h1>
+        <p>Analysis summary for multiple emails</p>
+    </header>
+
+    <div class="container">
+        <h2>Accuracy Summary</h2>
+        
+        <div class="chart-container">
+            <div class="chart-title">Classification Results</div>
+            <canvas id="batch-results-chart" 
+                data-true-positives="{{ results|selectattr('predicted_class', 'eq', 1)|selectattr('correct', 'eq', true)|list|length }}"
+                data-false-positives="{{ results|selectattr('predicted_class', 'eq', 1)|selectattr('correct', 'eq', false)|list|length }}"
+                data-true-negatives="{{ results|selectattr('predicted_class', 'eq', 0)|selectattr('correct', 'eq', true)|list|length }}"
+                data-false-negatives="{{ results|selectattr('predicted_class', 'eq', 0)|selectattr('correct', 'eq', false)|list|length }}">
+            </canvas>
+        </div>
+        
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">Overall Accuracy</div>
+                <div class="card-value">{{ "%.1f"|format(accuracy * 100) }}%</div>
+                <div class="card-footer">
+                    {% if accuracy > 0.8 %}
+                    Excellent detection accuracy
+                    {% elif accuracy > 0.6 %}
+                    Good detection accuracy
+                    {% else %}
+                    Fair detection accuracy
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Total Emails</div>
+                <div class="card-value">{{ results|length }}</div>
+                <div class="card-footer">Successfully processed emails</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Correct Classifications</div>
+                <div class="card-value">{{ results|selectattr('correct', 'eq', true)|list|length }}</div>
+                <div class="card-footer">Out of {{ results|length }} total emails</div>
+            </div>
+        </div>
+        
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="container">
+        <h2>Detailed Results</h2>
+        
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'AllResults')" id="defaultOpen">All Results</button>
+            <button class="tablinks" onclick="openTab(event, 'PhishingEmails')">Phishing Emails</button>
+            <button class="tablinks" onclick="openTab(event, 'LegitimateEmails')">Legitimate Emails</button>
+        </div>
+        
+        <div id="AllResults" class="tabcontent">
+            <h3>All Processed Emails</h3>
+            <div class="result-list">
+                {% for result in results %}
+                <div class="result-item">
+                    <div class="result-header">
+                        <span class="result-filename">{{ result.filename }}</span>
+                        <span class="badge {% if result.predicted_class == 1 %}risk-high{% else %}risk-minimal{% endif %}">
+                            {% if result.predicted_class == 1 %}PHISHING{% else %}LEGITIMATE{% endif %}
+                        </span>
+                        <span class="badge {% if result.correct %}badge-success{% else %}badge-danger{% endif %}">
+                            {% if result.correct %}CORRECT{% else %}INCORRECT{% endif %}
+                        </span>
+                    </div>
+                    <div class="result-details">
+                        <div class="progress-container {% if result.predicted_class == 0 %}progress-legitimate{% endif %}">
+                            <div class="progress-bar" data-width="{{ result.probability * 100 }}"></div>
+                        </div>
+                        <div class="result-info">
+                            <div>Risk Level: <strong>{{ result.risk_level }}</strong></div>
+                            <div>Probability: <strong>{{ "%.1f"|format(result.probability * 100) }}%</strong></div>
+                            {% if result.suspicious_features %}
+                            <div>Features: {{ result.suspicious_features }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div id="PhishingEmails" class="tabcontent">
+            <h3>Phishing Emails</h3>
+            <div class="result-list">
+                {% for result in results %}
+                    {% if result.predicted_class == 1 %}
+                    <div class="result-item">
+                        <div class="result-header">
+                            <span class="result-filename">{{ result.filename }}</span>
+                            <span class="badge risk-high">PHISHING</span>
+                            <span class="badge {% if result.correct %}badge-success{% else %}badge-danger{% endif %}">
+                                {% if result.correct %}CORRECT{% else %}INCORRECT{% endif %}
+                            </span>
+                        </div>
+                        <div class="result-details">
+                            <div class="progress-container">
+                                <div class="progress-bar" data-width="{{ result.probability * 100 }}"></div>
+                            </div>
+                            <div class="result-info">
+                                <div>Risk Level: <strong>{{ result.risk_level }}</strong></div>
+                                <div>Probability: <strong>{{ "%.1f"|format(result.probability * 100) }}%</strong></div>
+                                {% if result.suspicious_features %}
+                                <div>Features: {{ result.suspicious_features }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div id="LegitimateEmails" class="tabcontent">
+            <h3>Legitimate Emails</h3>
+            <div class="result-list">
+                {% for result in results %}
+                    {% if result.predicted_class == 0 %}
+                    <div class="result-item">
+                        <div class="result-header">
+                            <span class="result-filename">{{ result.filename }}</span>
+                            <span class="badge risk-minimal">LEGITIMATE</span>
+                            <span class="badge {% if result.correct %}badge-success{% else %}badge-danger{% endif %}">
+                                {% if result.correct %}CORRECT{% else %}INCORRECT{% endif %}
+                            </span>
+                        </div>
+                        <div class="result-details">
+                            <div class="progress-container progress-legitimate">
+                                <div class="progress-bar" data-width="{{ result.probability * 100 }}"></div>
+                            </div>
+                            <div class="result-info">
+                                <div>Risk Level: <strong>{{ result.risk_level }}</strong></div>
+                                <div>Probability: <strong>{{ "%.1f"|format(result.probability * 100) }}%</strong></div>
+                                {% if result.suspicious_features %}
+                                <div>Features: {{ result.suspicious_features }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="/" class="btn">Analyze More Emails</a>
+    </div>
+
+    <div class="footer">
+        <p>Email Phishing Detection System &copy; 2025</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Batch results chart
+            const canvas = document.getElementById('batch-results-chart');
+            const ctx = canvas.getContext('2d');
+            
+            // Count results by prediction and correctness
+            const truePositives = parseInt(canvas.getAttribute('data-true-positives') || 0);
+            const falsePositives = parseInt(canvas.getAttribute('data-false-positives') || 0);
+            const trueNegatives = parseInt(canvas.getAttribute('data-true-negatives') || 0);
+            const falseNegatives = parseInt(canvas.getAttribute('data-false-negatives') || 0);
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['True Positives', 'False Positives', 'True Negatives', 'False Negatives'],
+                    datasets: [{
+                        data: [truePositives, falsePositives, trueNegatives, falseNegatives],
+                        backgroundColor: [
+                            '#e74c3c',
+                            '#f39c12',
+                            '#27ae60',
+                            '#3498db'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            fontColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#e1e1e1' : '#333333'
+                        }
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                const dataset = data.datasets[tooltipItem.datasetIndex];
+                                const total = dataset.data.reduce((previousValue, currentValue) => previousValue + currentValue);
+                                const currentValue = dataset.data[tooltipItem.index];
+                                const percentage = Math.floor(((currentValue/total) * 100)+0.5);
+                                return data.labels[tooltipItem.index] + ': ' + currentValue + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

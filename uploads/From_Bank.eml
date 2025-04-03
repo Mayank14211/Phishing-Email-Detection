@@ -1,0 +1,48 @@
+From: "Bank Security" <security@fakebank.com>
+To: "User" <victim@example.com>
+Subject: ⚠️ URGENT: Unauthorized Login Attempt Detected!
+Date: Tue, 26 Mar 2025 08:15:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<p>Dear Valued Customer,</p>
+
+<p>We detected an <b>unauthorized login attempt</b> from a new device. 
+If this was not you, please <a href="http://fakebank-security.com/login">verify your account immediately</a>.</p>
+
+<p>Failure to act within <b>24 hours</b> will result in account suspension.</p>
+
+<p>Best Regards,<br>Fake Bank Security Team</p>
+--
+From: "Tech Support" <support@fakecompany.com>
+To: "User" <victim@example.com>
+Subject: Your Computer is at Risk! Immediate Action Required
+Date: Mon, 25 Mar 2025 10:45:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<p>Dear User,</p>
+
+<p>We have detected a <b>virus</b> on your system. Your personal data is at risk!
+Click <a href="http://fake-tech-support.com/fix">here</a> to scan your device for threats.</p>
+
+<p>Do not ignore this warning or your device will be locked.</p>
+
+<p>Best Regards,<br>Fake Tech Support</p>
+--
+From: "Lottery Winner" <lottery@fake-lottery.com>
+To: "User" <victim@example.com>
+Subject: Congratulations! You Won $1,000,000!
+Date: Sun, 24 Mar 2025 18:30:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<p>Congratulations!</p>
+
+<p>Your email was selected as the lucky winner of <b>$1,000,000</b> in the International Lottery Draw.</p>
+
+<p>To claim your prize, please provide your personal details by filling out the form <a href="http://fake-lottery-claims.com">here</a>.</p>
+
+<p>Act fast! This offer expires in 48 hours.</p>
+
+<p>Best Wishes,<br>Fake Lottery Team</p>

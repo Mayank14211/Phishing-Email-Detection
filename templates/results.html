@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Analysis Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>Phishing Analysis Results</h1>
+        <p>Analysis summary for {{ results.filename }}</p>
+    </header>
+
+    <div class="container">
+        <div class="analysis-summary">
+            <button class="btn btn-secondary" id="copy-results" onclick="copyResults()">
+                <i class="icon-copy"></i> Copy Results
+            </button>
+        </div>
+
+        {% if results.predicted_class == 1 %}
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">Detection Result</div>
+                <div class="card-value">
+                    <span class="text-danger">PHISHING</span>
+                </div>
+                <div class="card-footer">
+                    Risk classification based on analysis
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Risk Level</div>
+                <div class="card-value">{{ results.risk_level }}</div>
+                <div class="card-footer">
+                    Level of potential threat
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Suspicious Elements</div>
+                <div class="card-value">{{ results.suspicious_features|length }}</div>
+                <div class="card-footer">
+                    Detected in email content
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">Detection Result</div>
+                <div class="card-value">
+                    <span class="text-success">LEGITIMATE</span>
+                </div>
+                <div class="card-footer">
+                    Risk classification based on analysis
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Risk Level</div>
+                <div class="card-value">{{ results.risk_level }}</div>
+                <div class="card-footer">
+                    Level of potential threat
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Suspicious Elements</div>
+                <div class="card-value">{{ results.suspicious_features|length }}</div>
+                <div class="card-footer">
+                    Detected in email content
+                </div>
+            </div>
+        </div>
+        
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <h2>Risk Factors Visualization</h2>
+        
+        {% if results.suspicious_features %}
+            <div class="result-panel">
+                <h3>Suspicious Features Detected:</h3>
+                <ul>
+                    {% for feature in results.suspicious_features %}
+                    <li class="feature-item">
+                        <div class="feature-title">{{ feature }}</div>
+                        <div class="feature-details">
+                            <p>This feature contributes to the overall risk score of the email.</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Risk Analysis</div>
+                <canvas id="risk-factors-chart" 
+                    data-labels="{{ results.suspicious_features|tojson }}"
+                    data-values="{{ [5, 4, 3, 2, 1][:results.suspicious_features|length]|tojson }}">
+                </canvas>
+            </div>
+            
+            <div class="clearfix"></div>
+            
+            <h2>Detection Details</h2>
+        {% else %}
+            <div class="result-panel">
+                <h3>No suspicious features detected</h3>
+                <p>This email does not contain common phishing indicators.</p>
+            </div>
+        {% endif %}
+        
+        {% if user_classification != "unknown" %}
+        <div class="alert {% if results.correct %}alert-success{% else %}alert-warning{% endif %}">
+            <p>
+                <strong>User classification:</strong> {{ user_classification.upper() }}<br>
+                <strong>Model prediction:</strong> {% if results.predicted_class == 1 %}PHISHING{% else %}LEGITIMATE{% endif %}<br>
+                The prediction is <strong>{% if results.correct %}correct{% else %}different from your classification{% endif %}</strong>.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <h2>What This Means</h2>
+        
+        {% if results.predicted_class == 1 %}
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">Detection Result</div>
+                <div class="card-value">
+                    <span class="text-danger">PHISHING</span>
+                </div>
+                <div class="card-footer">
+                    Confidence: {{ "%.1f"|format(results.probability * 100) }}%
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Risk Level</div>
+                <div class="card-value">{{ results.risk_level }}</div>
+                <div class="card-footer">
+                    {% if results.risk_level == "HIGH" %}
+                    A significant likelihood this is a malicious email.
+                    {% elif results.risk_level == "MEDIUM" %}
+                    Several suspicious elements were detected.
+                    {% else %}
+                    Some minor suspicious elements were found.
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Probability</div>
+                <div class="card-value">{{ "%.1f"|format(results.probability * 100) }}%</div>
+                <div class="card-footer">
+                    {% if results.probability > 0.8 %}
+                    Very high and strongly suggests this is a phishing email.
+                    {% elif results.probability > 0.6 %}
+                    Above average and indicates this may be a phishing email.
+                    {% else %}
+                    Slightly above the threshold, suggesting some caution is warranted.
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Recommendation</div>
+                <div class="card-value"><span class="badge risk-high">CAUTION</span></div>
+                <div class="card-footer">Treat this email with caution. Do not click links, open attachments, or respond with sensitive information.</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">Detection Result</div>
+                <div class="card-value">
+                    <span class="text-success">LEGITIMATE</span>
+                </div>
+                <div class="card-footer">
+                    Confidence: {{ "%.1f"|format(results.probability * 100) }}%
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Risk Level</div>
+                <div class="card-value">{{ results.risk_level }}</div>
+                <div class="card-footer">
+                    {% if results.risk_level == "LOW" or results.risk_level == "MINIMAL" %}
+                    Very few or no suspicious elements were detected.
+                    {% else %}
+                    Some minor suspicious elements were found, but not enough to classify as phishing.
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Probability</div>
+                <div class="card-value">{{ "%.1f"|format(results.probability * 100) }}%</div>
+                <div class="card-footer">Below our threshold of {{ "%.1f"|format(results.threshold_used * 100) }}%.</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Recommendation</div>
+                <div class="card-value"><span class="badge risk-minimal">SAFE</span></div>
+                <div class="card-footer">This email appears to be legitimate, but always exercise general caution with any unexpected communications.</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <a href="/" class="btn">Analyze Another Email</a>
+    </div>
+
+    <div class="footer">
+        <p>Email Phishing Detection System &copy; 2025</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

@@ -1,0 +1,2 @@
+filename,true_label,predicted_class,probability,risk_level,suspicious_features,correct
+legitimate1.eml,0,0,0.4,LOW,Requests sensitive information (2 instances),True

@@ -1,0 +1,16 @@
+From: "Lottery Winner" <lottery@fake-lottery.com>
+To: "User" <victim@example.com>
+Subject: Congratulations! You Won $1,000,000!
+Date: Sun, 24 Mar 2025 18:30:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<p>Congratulations!</p>
+
+<p>Your email was selected as the lucky winner of <b>$1,000,000</b> in the International Lottery Draw.</p>
+
+<p>To claim your prize, please provide your personal details by filling out the form <a href="http://fake-lottery-claims.com">here</a>.</p>
+
+<p>Act fast! This offer expires in 48 hours.</p>
+
+<p>Best Wishes,<br>Fake Lottery Team</p>

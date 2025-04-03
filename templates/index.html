@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>Email Phishing Detection</h1>
+        <p>Upload an email file to analyze for phishing indicators</p>
+    </header>
+
+    {% if model_loaded %}
+    <div class="model-status status-good">
+        <p><strong>Status:</strong> Model loaded successfully. Ready for analysis.</p>
+    </div>
+    {% else %}
+    <div class="model-status status-warning">
+        <p><strong>Status:</strong> Model not found. Using default parameters for analysis.</p>
+    </div>
+    {% endif %}
+
+    <div class="container">
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'SingleEmail')" id="defaultOpen">Analyze Single Email</button>
+            <button class="tablinks" onclick="openTab(event, 'MultipleEmails')">Analyze Multiple Emails</button>
+        </div>
+
+        <div id="SingleEmail" class="tabcontent">
+            <h2>Analyze a Single Email</h2>
+            <p>Upload an email file (.eml or .txt) to analyze for phishing indicators.</p>
+            
+            <form action="/analyze" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="email_file">Select Email File:</label>
+                    <input type="file" id="email_file" name="email_file" accept=".eml,.txt" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="classification">Do you know if this is a phishing email? (Optional)</label>
+                    <select id="classification" name="classification">
+                        <option value="unknown">Unknown/Not Sure</option>
+                        <option value="phishing">Phishing</option>
+                        <option value="legitimate">Legitimate</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Analyze Email</button>
+            </form>
+        </div>
+
+        <div id="MultipleEmails" class="tabcontent">
+            <h2>Analyze Multiple Emails</h2>
+            <p>Select multiple email files to analyze in batch. The filenames should include 'phishing' for known phishing emails.</p>
+            
+            <form action="/analyze-directory" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="email_directory">Select Multiple Email Files:</label>
+                    <input type="file" id="email_directory" name="email_directory" accept=".eml,.txt" multiple required>
+                    <small>Hint: Files with "phishing" in the name will be considered phishing emails for accuracy calculation.</small>
+                </div>
+                
+                <button type="submit" class="btn">Analyze All Emails</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>How to Use This Tool</h2>
+        
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">Upload</div>
+                <p>Upload an email file in .eml or .txt format to begin analysis.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Analyze</div>
+                <p>Our augmented AI model will scan for phishing indicators and suspicious patterns.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Review</div>
+                <p>Get detailed results showing risk level, suspicious features, and recommendations.</p>
+            </div>
+        </div>
+        
+        <p>For more accurate results, the system uses a trained and augmented model that identifies patterns commonly found in modern phishing emails, including:</p>
+        <ul>
+            <li>Suspicious URL detection (including shortened links and typosquatting)</li>
+            <li>Threat and urgency language analysis</li>
+            <li>Sensitive information requests</li>
+            <li>Deceptive tactics common in phishing attempts</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>Email Phishing Detection System &copy; 2025</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

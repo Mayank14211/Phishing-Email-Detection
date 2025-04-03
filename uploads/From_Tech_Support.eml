@@ -1,0 +1,15 @@
+From: "Tech Support" <support@fakecompany.com>
+To: "User" <victim@example.com>
+Subject: Your Computer is at Risk! Immediate Action Required
+Date: Mon, 25 Mar 2025 10:45:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<p>Dear User,</p>
+
+<p>We have detected a <b>virus</b> on your system. Your personal data is at risk!
+Click <a href="http://fake-tech-support.com/fix">here</a> to scan your device for threats.</p>
+
+<p>Do not ignore this warning or your device will be locked.</p>
+
+<p>Best Regards,<br>Fake Tech Support</p>

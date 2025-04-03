@@ -1,0 +1,10 @@
+Performance Metrics:
+Accuracy: 100.00%
+Precision: 0.00%
+Recall: 0.00%
+F1 Score: 0.00%
+True Positives: 0
+False Positives: 0
+True Negatives: 1
+False Negatives: 0
+Total Emails Analyzed: 1

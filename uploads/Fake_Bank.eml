@@ -1,0 +1,15 @@
+From: "Bank Security" <security@fakebank.com>
+To: "User" <victim@example.com>
+Subject: 🚨 URGENT: Unauthorized Login Attempt Detected!
+Date: Tue, 26 Mar 2025 08:15:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<p>Dear Valued Customer,</p>
+
+<p>We detected an <b>unauthorized login attempt</b> from a new device.  
+To secure your account, please <a href="http://fakebank-login-verification.com">click here</a> and verify your identity.</p>
+
+<p>Failure to act within <b>24 hours</b> will result in account suspension.</p>
+
+<p>Best Regards,<br>Fake Bank Security Team</p>

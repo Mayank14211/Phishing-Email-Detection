@@ -1,0 +1,10 @@
+{
+  "optimal_threshold": 0.4,
+  "feature_weights": {
+    "urgent_words": 2,
+    "money_words": 2,
+    "sensitive_words": 3,
+    "suspicious_domains": 5
+  },
+  "timestamp": "2025-04-02 15:25:26"
+}

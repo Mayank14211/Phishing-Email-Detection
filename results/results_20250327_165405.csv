@@ -1,0 +1,3 @@
+filename,true_label,predicted_class,probability,risk_level,suspicious_features,correct
+phishing_lottery_scam.eml,1,1,0.7,MEDIUM,"Contains 1 urgency indicators, Contains 4 money-related terms",True
+phishing1.eml,1,1,0.95,HIGH,"Contains 2 urgency indicators, Requests sensitive information (6 instances)",True
